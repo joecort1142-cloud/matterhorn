@@ -1201,58 +1201,72 @@
           </div>
         </div>
 
-        <form class="contact-form reveal" action="https://formspree.io/f/xgoranja" method="POST">
-          <div class="form-row">
-            <div class="form-field">
-              <label for="name">Your Name</label>
-              <input type="text" id="name" placeholder="Jane Smith" required />
-            </div>
-            <div class="form-field">
-              <label for="email">Email Address</label>
-              <input type="email" id="email" placeholder="jane@email.com" required />
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-field">
-              <label for="phone">Phone Number</label>
-              <input type="tel" id="phone" placeholder="(555) 000-0000" />
-            </div>
-            <div class="form-field">
-              <label for="date">Event Date</label>
-              <input type="date" id="date" />
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-field">
-              <label for="event-type">Event Type</label>
-              <select id="event-type">
-                <option value="" disabled selected>Select event type</option>
-                <option>Wedding</option>
-                <option>Birthday / Quinceañera</option>
-                <option>Corporate Event</option>
-                <option>Holiday Party</option>
-                <option>School / Prom</option>
-                <option>Other</option>
-              </select>
-            </div>
-            <div class="form-field">
-              <label for="package">Package Interest</label>
-              <select id="package">
-                <option value="" disabled selected>Select a package</option>
-                <option>Classic</option>
-                <option>Luxe</option>
-                <option>Corporate</option>
-                <option>Not Sure Yet</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-field">
-            <label for="message">Anything Else?</label>
-            <textarea id="message" placeholder="Tell us about your event, venue, guest count, or any special requests..."></textarea>
-          </div>
-          <button type="submit" class="btn btn-primary" style="align-self:flex-start;">Send Inquiry →</button>
-          <p id="form-success" style="display:none; color:var(--gold); font-size:0.88rem; margin-top:8px;">✦ Thank you! We'll be in touch within one business day.</p>
-        </form>
+<form class="contact-form reveal" action="https://formspree.io/f/xgoranja" method="POST">
+
+  <div class="form-row">
+    <div class="form-field">
+      <label for="name">Your Name</label>
+      <input type="text" id="name" name="name" placeholder="Jane Smith" required />
+    </div>
+
+    <div class="form-field">
+      <label for="email">Email Address</label>
+      <input type="email" id="email" name="email" placeholder="jane@email.com" required />
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-field">
+      <label for="phone">Phone Number</label>
+      <input type="tel" id="phone" name="phone" placeholder="(555) 000-0000" />
+    </div>
+
+    <div class="form-field">
+      <label for="date">Event Date</label>
+      <input type="date" id="date" name="date" />
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-field">
+      <label for="event-type">Event Type</label>
+      <select id="event-type" name="eventType">
+        <option value="" disabled selected>Select event type</option>
+        <option>Wedding</option>
+        <option>Birthday / Quinceañera</option>
+        <option>Corporate Event</option>
+        <option>Holiday Party</option>
+        <option>School / Prom</option>
+        <option>Other</option>
+      </select>
+    </div>
+
+    <div class="form-field">
+      <label for="package">Package Interest</label>
+      <select id="package" name="package">
+        <option value="" disabled selected>Select a package</option>
+        <option>Classic</option>
+        <option>Luxe</option>
+        <option>Corporate</option>
+        <option>Not Sure Yet</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="form-field">
+    <label for="message">Anything Else?</label>
+    <textarea id="message" name="message" placeholder="Tell us about your event, venue, guest count, or any special requests..."></textarea>
+  </div>
+
+  <button type="submit" class="btn btn-primary" style="align-self:flex-start;">
+    Send Inquiry →
+  </button>
+
+  <p id="form-success" style="display:none; color:var(--gold); font-size:0.88rem; margin-top:8px;">
+    ✦ Thank you! We'll be in touch within one business day.
+  </p>
+
+</form>
       </div>
     </div>
   </section>
