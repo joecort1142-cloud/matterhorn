@@ -1201,7 +1201,8 @@
           </div>
         </div>
 
-<form class="contact-form reveal" action="https://formspree.io/f/xgoranja" method="POST">
+
+  <form class="contact-form reveal" id="contact-form" action="https://formspree.io/f/xgoranja" method="POST">
 
   <div class="form-row">
     <div class="form-field">
@@ -1258,10 +1259,8 @@
     <textarea id="message" name="message" placeholder="Tell us about your event, venue, guest count, or any special requests..."></textarea>
   </div>
 
-  <button type="submit" class="btn btn-primary" style="align-self:flex-start;">
-    Send Inquiry →
-  </button>
-<input type="hidden" name="_next" value="https://whitewater-events.com" />
+<button type="submit" id="submit-btn" class="btn btn-primary" style="align-self:flex-start;">Send Inquiry →</button>
+<p id="form-success" style="display:none; color:var(--gold); font-size:0.88rem; margin-top:8px;">✦ Thank you! We'll be in touch within one business day.</p>
 
 </form>
       </div>
@@ -1322,11 +1321,28 @@
     window.addEventListener('scroll', () => {
       navbar.classList.toggle('scrolled', window.scrollY > 60);
     });
-// Clear form if redirected back after submission
-if (window.location.hash === '#contact') {
-  const form = document.querySelector('.contact-form');
-  if (form) form.reset();
-}
+const form = document.getElementById('contact-form');
+form.addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const btn = document.getElementById('submit-btn');
+  btn.textContent = 'Sending...';
+  btn.style.opacity = '0.6';
+
+  const response = await fetch(form.action, {
+    method: 'POST',
+    body: new FormData(form),
+    headers: { 'Accept': 'application/json' }
+  });
+
+  if (response.ok) {
+    form.reset();
+    document.getElementById('form-success').style.display = 'block';
+    btn.textContent = 'Sent ✦';
+  } else {
+    btn.textContent = 'Something went wrong — try again';
+    btn.style.opacity = '1';
+  }
+});
     
     // Scroll reveal
     const reveals = document.querySelectorAll('.reveal');
