@@ -1322,7 +1322,12 @@
     window.addEventListener('scroll', () => {
       navbar.classList.toggle('scrolled', window.scrollY > 60);
     });
-
+// Clear form if redirected back after submission
+if (window.location.hash === '#contact') {
+  const form = document.querySelector('.contact-form');
+  if (form) form.reset();
+}
+    
     // Scroll reveal
     const reveals = document.querySelectorAll('.reveal');
     const observer = new IntersectionObserver((entries) => {
