@@ -1261,10 +1261,7 @@
   <button type="submit" class="btn btn-primary" style="align-self:flex-start;">
     Send Inquiry →
   </button>
-
-  <p id="form-success" style="display:none; color:var(--gold); font-size:0.88rem; margin-top:8px;">
-    ✦ Thank you! We'll be in touch within one business day.
-  </p>
+<input type="hidden" name="_next" value="https://whitewater-events.com" />
 
 </form>
       </div>
@@ -1347,12 +1344,6 @@
       });
     });
 
-    // Form submit (replace with your real handler / Formspree / Netlify Forms etc.)
-    function handleSubmit(e) {
-      e.preventDefault();
-      document.getElementById('form-success').style.display = 'block';
-      e.target.querySelectorAll('input, select, textarea').forEach(el => el.value = '');
-    }
   </script>
 </body>
 </html>
