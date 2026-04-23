@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Whitewater Events Photo Booth Rentals</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ============================================================
+       CSS VARIABLES — edit colors, fonts, spacing here
+       ============================================================ */
+    :root {
+      --gold:        #c9a96e;
+      --gold-light:  #e8d5b0;
+      --black:       #0d0d0d;
+      --off-white:   #f5f0ea;
+      --warm-gray:   #8a8278;
+      --section-gap: 120px;
+      --font-display: 'Cormorant Garamond', Georgia, serif;
+      --font-body:    'DM Sans', sans-serif;
+    }
+
+    /* ============================================================
+       RESET & BASE
+       ============================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--off-white);
+      font-family: var(--font-body);
+      font-weight: 300;
+      font-size: 16px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    img { display: block; width: 100%; object-fit: cover; }
+    a  { color: inherit; text-decoration: none; }
+
+    /* ============================================================
+       NOISE OVERLAY (grain texture)
+       ============================================================ */
+     body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.35;
+    }
+
+    /* ============================================================
+       TYPOGRAPHY HELPERS
+       ============================================================ */
+    .display {
+      font-family: var(--font-display);
+      font-weight: 300;
+      line-height: 1.1;
+      letter-spacing: -0.01em;
+    }
+
+    .eyebrow {
+      font-family: var(--font-body);
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .gold { color: var(--gold); }
+
+    /* ============================================================
+       NAVBAR
+       ============================================================ */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 24px 60px;
+      background: linear-gradient(to bottom, rgba(13,13,13,0.95) 0%, transparent 100%);
+      transition: background 0.4s;
+    }
+
+    nav.scrolled {
+      background: rgba(13,13,13,0.97);
+      border-bottom: 1px solid rgba(201,169,110,0.15);
+      padding: 16px 60px;
+    }
+
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--gold);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 40px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--off-white);
+      opacity: 0.7;
+      transition: opacity 0.2s, color 0.2s;
+    }
+
+    .nav-links a:hover { opacity: 1; color: var(--gold); }
+
+    .nav-cta {
+      background: transparent;
+      border: 1px solid var(--gold);
+      color: var(--gold) !important;
+      padding: 8px 22px;
+      opacity: 1 !important;
+      transition: background 0.2s, color 0.2s !important;
+    }
+
+    .nav-cta:hover { background: var(--gold) !important; color: var(--black) !important; }
+
+    /* ============================================================
+       HERO
+       ============================================================ */
+    #hero {
+      position: relative;
+      height: 100vh;
+      min-height: 700px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      /* REPLACE with your own hero image */
+      background: url('https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=1800&q=80') center/cover no-repeat;
+      transform: scale(1.06);
+      animation: heroZoom 14s ease-out forwards;
+    }
+
+    @keyframes heroZoom {
+      from { transform: scale(1.06); }
+      to   { transform: scale(1.0);  }
+    }
+
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        180deg,
+        rgba(13,13,13,0.30) 0%,
+        rgba(13,13,13,0.55) 50%,
+        rgba(13,13,13,0.85) 100%
+      );
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 860px;
+      padding: 0 24px;
+      animation: fadeUp 1.2s 0.3s both ease-out;
+    }
+
+    .hero-content .eyebrow { margin-bottom: 20px; }
+
+    .hero-headline {
+      font-size: clamp(3.2rem, 7vw, 6.5rem);
+      margin-bottom: 24px;
+    }
+
+    .hero-sub {
+      font-size: 1.05rem;
+      color: var(--gold-light);
+      max-width: 500px;
+      margin: 0 auto 44px;
+      opacity: 0.85;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 15px 42px;
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      transition: all 0.25s ease;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--gold);
+      color: var(--black);
+      border: 1px solid var(--gold);
+    }
+
+    .btn-primary:hover {
+      background: transparent;
+      color: var(--gold);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--off-white);
+      border: 1px solid rgba(245,240,234,0.4);
+      margin-left: 16px;
+    }
+
+    .btn-outline:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      opacity: 0.5;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      animation: scrollPulse 2.5s infinite;
+    }
+
+    .hero-scroll .line {
+      width: 1px;
+      height: 44px;
+      background: linear-gradient(to bottom, var(--gold), transparent);
+    }
+
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.5; transform: translateX(-50%) translateY(0); }
+      50%       { opacity: 0.9; transform: translateX(-50%) translateY(6px); }
+    }
+
+    /* ============================================================
+       FADE-UP ANIMATION
+       ============================================================ */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0);    }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ============================================================
+       SECTION WRAPPER
+       ============================================================ */
+    section { padding: var(--section-gap) 60px; }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 72px;
+    }
+
+    .section-header .eyebrow { margin-bottom: 14px; }
+
+    .section-header h2 {
+      font-size: clamp(2.4rem, 4vw, 3.8rem);
+    }
+
+    .divider {
+      width: 48px;
+      height: 1px;
+      background: var(--gold);
+      margin: 20px auto 0;
+    }
+
+    /* ============================================================
+       ABOUT / INTRO STRIP
+       ============================================================ */
+    #about {
+      background: var(--off-white);
+      color: var(--black);
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .about-img-wrap {
+      position: relative;
+    }
+
+    .about-img-wrap img {
+      height: 560px;
+      /* REPLACE with your own about image */
+      object-position: center top;
+    }
+
+    .about-img-wrap::after {
+      content: '';
+      position: absolute;
+      top: 20px; left: 20px;
+      right: -20px; bottom: -20px;
+      border: 1px solid var(--gold);
+      z-index: -1;
+    }
+
+    .about-text .eyebrow { margin-bottom: 16px; }
+
+    .about-text h2 {
+      font-size: clamp(2rem, 3.5vw, 3rem);
+      margin-bottom: 24px;
+      color: var(--black);
+    }
+
+    .about-text p {
+      color: #444;
+      margin-bottom: 16px;
+      font-size: 0.97rem;
+    }
+
+    .about-text .btn-primary {
+      margin-top: 16px;
+    }
+
+    /* ============================================================
+       PACKAGES
+       ============================================================ */
+    #packages { background: #111; }
+
+    .packages-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+    }
+
+    .package-card {
+      border: 1px solid rgba(201,169,110,0.2);
+      padding: 48px 36px;
+      transition: border-color 0.3s, transform 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .package-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(201,169,110,0.06) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .package-card:hover {
+      border-color: var(--gold);
+      transform: translateY(-4px);
+    }
+
+    .package-card.featured {
+      border-color: var(--gold);
+      background: linear-gradient(160deg, rgba(201,169,110,0.1) 0%, rgba(13,13,13,0) 70%);
+    }
+
+    .package-badge {
+      display: inline-block;
+      background: var(--gold);
+      color: var(--black);
+      font-size: 0.6rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      margin-bottom: 24px;
+    }
+
+    .package-name {
+      font-family: var(--font-display);
+      font-size: 1.9rem;
+      font-weight: 400;
+      margin-bottom: 8px;
+    }
+
+    .package-price {
+      font-size: 2.6rem;
+      font-family: var(--font-display);
+      font-weight: 300;
+      color: var(--gold);
+      margin-bottom: 4px;
+    }
+
+    .package-price span {
+      font-size: 1rem;
+      color: var(--warm-gray);
+      font-family: var(--font-body);
+    }
+
+    .package-desc {
+      font-size: 0.88rem;
+      color: var(--warm-gray);
+      margin-bottom: 28px;
+      min-height: 48px;
+    }
+
+    .package-features {
+      list-style: none;
+      margin-bottom: 36px;
+    }
+
+    .package-features li {
+      font-size: 0.88rem;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: rgba(245,240,234,0.8);
+    }
+
+    .package-features li::before {
+      content: '✦';
+      color: var(--gold);
+      font-size: 0.5rem;
+      flex-shrink: 0;
+    }
+
+    /* ============================================================
+       GALLERY
+       ============================================================ */
+    #gallery { background: var(--black); padding-bottom: 0; }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: 280px 280px;
+      gap: 6px;
+      margin-top: 64px;
+    }
+
+    .gallery-item {
+      overflow: hidden;
+      position: relative;
+    }
+
+    .gallery-item:nth-child(1) { grid-column: span 2; grid-row: span 2; }
+    .gallery-item:nth-child(4) { grid-column: span 2; }
+
+    .gallery-item img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s ease;
+      filter: brightness(0.85) saturate(0.9);
+    }
+
+    .gallery-item:hover img {
+      transform: scale(1.06);
+      filter: brightness(1) saturate(1);
+    }
+
+    .gallery-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(13,13,13,0.6) 0%, transparent 50%);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+
+    .gallery-item:hover .gallery-overlay { opacity: 1; }
+
+    /* ============================================================
+       HOW IT WORKS
+       ============================================================ */
+    #how {
+      background: var(--off-white);
+      color: var(--black);
+    }
+
+    #how .section-header h2 { color: var(--black); }
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 40px;
+      text-align: center;
+    }
+
+    .step {
+      padding: 0 12px;
+    }
+
+    .step-num {
+      font-family: var(--font-display);
+      font-size: 5rem;
+      font-weight: 300;
+      color: var(--gold);
+      line-height: 1;
+      margin-bottom: 16px;
+      opacity: 0.7;
+    }
+
+    .step h3 {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: 400;
+      margin-bottom: 10px;
+      color: var(--black);
+    }
+
+    .step p {
+      font-size: 0.88rem;
+      color: #555;
+    }
+
+    /* ============================================================
+       TESTIMONIALS
+       ============================================================ */
+   /* #testimonials { background: #0a0a0a; }
+
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+    }
+
+    .testimonial {
+      border-left: 2px solid var(--gold);
+      padding: 28px 28px 28px 32px;
+      background: rgba(255,255,255,0.02);
+    }
+
+    .testimonial-text {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--off-white);
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .testimonial-author {
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .testimonial-event {
+      font-size: 0.75rem;
+      color: var(--warm-gray);
+      margin-top: 2px;
+    }
+
+    .stars {
+      color: var(--gold);
+      font-size: 0.75rem;
+      margin-bottom: 16px;
+      letter-spacing: 3px;
+    }
+*/
+    /* ============================================================
+       FAQ
+       ============================================================ */
+    #faq { background: var(--black); }
+
+    .faq-list {
+      max-width: 820px;
+      margin: 0 auto;
+    }
+
+    .faq-item {
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .faq-question {
+      width: 100%;
+      background: none;
+      border: none;
+      color: var(--off-white);
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 400;
+      text-align: left;
+      padding: 28px 0;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      transition: color 0.2s;
+    }
+
+    .faq-question:hover { color: var(--gold); }
+
+    .faq-icon {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      position: relative;
+      color: var(--gold);
+    }
+
+    .faq-icon::before,
+    .faq-icon::after {
+      content: '';
+      position: absolute;
+      background: currentColor;
+      transition: transform 0.3s, opacity 0.3s;
+    }
+
+    .faq-icon::before { width: 100%; height: 1px; top: 50%; left: 0; transform: translateY(-50%); }
+    .faq-icon::after  { width: 1px; height: 100%; left: 50%; top: 0; transform: translateX(-50%); }
+
+    .faq-item.open .faq-icon::after { transform: translateX(-50%) scaleY(0); }
+
+    .faq-answer {
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height 0.4s ease, padding 0.3s ease;
+    }
+
+    .faq-item.open .faq-answer { max-height: 300px; }
+
+    .faq-answer p {
+      font-size: 0.92rem;
+      color: var(--warm-gray);
+      padding-bottom: 24px;
+      line-height: 1.8;
+    }
+
+    /* ============================================================
+       CTA BANNER
+       ============================================================ */
+    #cta {
+      padding: 100px 60px;
+      background:
+        linear-gradient(135deg, rgba(13,13,13,0.92) 0%, rgba(30,22,10,0.95) 100%),
+        /* REPLACE with your own CTA background image */
+        url('https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=1600&q=80') center/cover no-repeat;
+      text-align: center;
+    }
+
+    #cta .eyebrow { margin-bottom: 16px; }
+
+    #cta h2 {
+      font-size: clamp(2.4rem, 4.5vw, 4rem);
+      margin-bottom: 20px;
+    }
+
+    #cta p {
+      font-size: 1rem;
+      color: var(--gold-light);
+      opacity: 0.8;
+      max-width: 500px;
+      margin: 0 auto 44px;
+    }
+
+    /* ============================================================
+       CONTACT
+       ============================================================ */
+    #contact { background: #0d0d0d; }
+
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 80px;
+      align-items: start;
+    }
+
+    .contact-info h2 {
+      font-size: clamp(2rem, 3vw, 2.8rem);
+      margin-bottom: 20px;
+    }
+
+    .contact-info p {
+      color: var(--warm-gray);
+      font-size: 0.92rem;
+      margin-bottom: 40px;
+    }
+
+    .contact-detail {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .contact-icon {
+      width: 40px;
+      height: 40px;
+      border: 1px solid rgba(201,169,110,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gold);
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+
+    .contact-detail-text strong {
+      display: block;
+      font-weight: 500;
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--off-white);
+      margin-bottom: 2px;
+    }
+
+    .contact-detail-text span {
+      font-size: 0.9rem;
+      color: var(--warm-gray);
+    }
+
+    .contact-form { display: flex; flex-direction: column; gap: 16px; }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+    .form-field { display: flex; flex-direction: column; gap: 6px; }
+
+    .form-field label {
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--warm-gray);
+    }
+
+    .form-field input,
+    .form-field select,
+    .form-field textarea {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: var(--off-white);
+      padding: 13px 16px;
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      transition: border-color 0.2s;
+      outline: none;
+      width: 100%;
+      -webkit-appearance: none;
+    }
+
+    .form-field input::placeholder,
+    .form-field textarea::placeholder { color: rgba(138,130,120,0.6); }
+
+    .form-field input:focus,
+    .form-field select:focus,
+    .form-field textarea:focus { border-color: var(--gold); }
+
+    .form-field select option { background: #1a1a1a; color: var(--off-white); }
+
+    .form-field textarea { resize: vertical; min-height: 120px; }
+
+    /* ============================================================
+       FOOTER
+       ============================================================ */
+    footer {
+      background: #050505;
+      padding: 56px 60px 36px;
+      border-top: 1px solid rgba(201,169,110,0.12);
+    }
+
+    .footer-top {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr;
+      gap: 60px;
+      margin-bottom: 56px;
+    }
+
+    .footer-brand .nav-logo { display: block; margin-bottom: 16px; }
+
+    .footer-brand p {
+      font-size: 0.85rem;
+      color: var(--warm-gray);
+      max-width: 260px;
+      line-height: 1.7;
+    }
+
+    .footer-col h4 {
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 20px;
+    }
+
+    .footer-col ul { list-style: none; }
+
+    .footer-col li { margin-bottom: 10px; }
+
+    .footer-col a {
+      font-size: 0.85rem;
+      color: var(--warm-gray);
+      transition: color 0.2s;
+    }
+
+    .footer-col a:hover { color: var(--off-white); }
+
+    .social-links {
+      display: flex;
+      gap: 14px;
+      margin-top: 24px;
+    }
+
+    .social-link {
+      width: 36px;
+      height: 36px;
+      border: 1px solid rgba(201,169,110,0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      color: var(--warm-gray);
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .social-link:hover { border-color: var(--gold); color: var(--gold); }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.05);
+      padding-top: 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-bottom p {
+      font-size: 0.78rem;
+      color: var(--warm-gray);
+    }
+
+    /* ============================================================
+       RESPONSIVE
+       ============================================================ */
+    @media (max-width: 1024px) {
+      nav { padding: 20px 32px; }
+      nav.scrolled { padding: 14px 32px; }
+      section { padding: var(--section-gap) 32px; }
+      .packages-grid { grid-template-columns: 1fr; max-width: 520px; margin: 0 auto; }
+      .gallery-grid { grid-template-columns: repeat(2, 1fr); grid-template-rows: auto; }
+      .gallery-item:nth-child(1) { grid-column: span 2; grid-row: span 1; }
+      .gallery-item:nth-child(4) { grid-column: span 2; }
+      .steps-grid { grid-template-columns: repeat(2, 1fr); gap: 48px; }
+      .testimonials-grid { grid-template-columns: 1fr; max-width: 600px; margin: 0 auto; }
+      .contact-grid { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 40px; }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .about-grid { grid-template-columns: 1fr; }
+      .about-img-wrap { display: none; }
+      .form-row { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr; }
+      .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+      .hero-headline { font-size: 3rem; }
+      .btn-outline { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       NAVIGATION
+       ============================================================ -->
+  <nav id="navbar">
+    <a href="#hero" class="nav-logo">Whitewater Events</a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#packages">Packages</a></li>
+      <li><a href="#gallery">Gallery</a></li>
+      <li><a href="#how">How It Works</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="#contact" class="nav-cta">Book Now</a></li>
+    </ul>
+  </nav>
+
+  <!-- ============================================================
+       HERO
+       ============================================================ -->
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <p class="eyebrow">Premium Photo Booth Rentals</p>
+      <h1 class="display hero-headline">
+        Memories That Last<br /><em class="gold">a Lifetime</em>
+      </h1>
+      <p class="hero-sub">Elegant, interactive photo booths for weddings, corporate events, birthdays &amp; everything in between.</p>
+      <a href="#packages" class="btn btn-primary">View Packages</a>
+      <a href="#gallery" class="btn btn-outline">See the Gallery</a>
+    </div>
+    <div class="hero-scroll">
+      <div class="line"></div>
+      Scroll
+    </div>
+  </section>
+
+  <!-- ============================================================
+       ABOUT
+       ============================================================ -->
+  <section id="about">
+    <div class="container">
+      <div class="about-grid reveal">
+        <div class="about-img-wrap">
+          <!-- REPLACE src with your own image -->
+          <img src="https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=800&q=80" alt="Photo booth setup at event" />
+        </div>
+        <div class="about-text">
+          <p class="eyebrow">Who We Are</p>
+          <h2 class="display">Bringing the Fun &amp; the<br/><em class="gold">Glamour</em> to Your Event</h2>
+          <p>We are [Your Business Name], a locally-owned photo booth company dedicated to creating unforgettable experiences at every event. With our state-of-the-art booths, customizable props, and instant-print capabilities, your guests will be talking about your event long after the night ends.</p>
+          <p>From intimate birthday parties to grand weddings and corporate galas, we show up on time, set up seamlessly, and make magic happen — all night long.</p>
+          <a href="#contact" class="btn btn-primary">Get in Touch</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       PACKAGES
+       ============================================================ -->
+  <section id="packages">
+    <div class="container">
+      <div class="section-header reveal">
+        <p class="eyebrow">What We Offer</p>
+        <h2 class="display">Choose Your Package</h2>
+        <div class="divider"></div>
+      </div>
+      <div class="packages-grid">
+
+        <div class="package-card reveal">
+          <div class="package-name">Classic</div>
+          <div class="package-price">$XXX <span>/ event</span></div>
+          <p class="package-desc">Perfect for smaller gatherings and casual celebrations.</p>
+          <ul class="package-features">
+            <li>Up to 3 Hours of Service</li>
+            <li>Unlimited Prints</li>
+            <li>Standard Prop Package</li>
+            <li>Online Gallery</li>
+            <li>1 Attendant On-Site</li>
+          </ul>
+          <a href="#contact" class="btn btn-outline">Book Classic</a>
+        </div>
+
+        <div class="package-card featured reveal">
+          <div class="package-badge">Most Popular</div>
+          <div class="package-name">Luxe</div>
+          <div class="package-price">$XXX <span>/ event</span></div>
+          <p class="package-desc">Our most popular package — ideal for weddings &amp; milestone events.</p>
+          <ul class="package-features">
+            <li>Up to 5 Hours of Service</li>
+            <li>Unlimited Prints + Digital Files</li>
+            <li>Premium Prop Collection</li>
+            <li>Custom Branded Print Overlay</li>
+            <li>Online &amp; Social Gallery</li>
+            <li>2 Attendants On-Site</li>
+            <li>GIF + Boomerang Mode</li>
+          </ul>
+          <a href="#contact" class="btn btn-primary">Book Luxe</a>
+        </div>
+
+        <div class="package-card reveal">
+          <div class="package-name">Corporate</div>
+          <div class="package-price">$XXX <span>/ event</span></div>
+          <p class="package-desc">Tailored for corporate events, trade shows, and brand activations.</p>
+          <ul class="package-features">
+            <li>Flexible Hours</li>
+            <li>Full Brand Customization</li>
+            <li>Data Capture &amp; Lead Gen</li>
+            <li>Social Media Integration</li>
+            <li>Dedicated Event Coordinator</li>
+            <li>Post-Event Analytics Report</li>
+          </ul>
+          <a href="#contact" class="btn btn-outline">Book Corporate</a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       GALLERY
+       ============================================================ -->
+  <section id="gallery" style="padding-bottom: 0;">
+    <div class="container">
+      <div class="section-header reveal">
+        <p class="eyebrow">Portfolio</p>
+        <h2 class="display">Moments We've Captured</h2>
+        <div class="divider"></div>
+      </div>
+    </div>
+    <!-- REPLACE each src with your own gallery images -->
+    <div class="gallery-grid reveal">
+      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1519671282429-b44660ead0a7?w=900&q=80" alt="Wedding photo booth" /><div class="gallery-overlay"></div></div>
+      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=600&q=80" alt="Party photo booth" /><div class="gallery-overlay"></div></div>
+      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1527529482837-4698179dc6ce?w=600&q=80" alt="Birthday event" /><div class="gallery-overlay"></div></div>
+      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?w=900&q=80" alt="Corporate event booth" /><div class="gallery-overlay"></div></div>
+      <div class="gallery-item"><img src="https://images.unsplash.com/photo-1524178232363-1fb2b075b655?w=600&q=80" alt="Fun photo strip" /><div class="gallery-overlay"></div></div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       HOW IT WORKS
+       ============================================================ -->
+  <section id="how">
+    <div class="container">
+      <div class="section-header reveal">
+        <p class="eyebrow">The Process</p>
+        <h2 class="display">How It Works</h2>
+        <div class="divider"></div>
+      </div>
+      <div class="steps-grid">
+        <div class="step reveal">
+          <div class="step-num">01</div>
+          <h3>Book Online</h3>
+          <p>Fill out our simple inquiry form with your event date, location, and package preference. We'll confirm availability within 24 hours.</p>
+        </div>
+        <div class="step reveal">
+          <div class="step-num">02</div>
+          <h3>Customize</h3>
+          <p>Choose your backdrop, props, print template, and any add-ons. We'll design a custom layout that matches your event's theme.</p>
+        </div>
+        <div class="step reveal">
+          <div class="step-num">03</div>
+          <h3>We Set Up</h3>
+          <p>Our team arrives early, sets up everything professionally, and does a full test run — so you don't have to worry about a thing.</p>
+        </div>
+        <div class="step reveal">
+          <div class="step-num">04</div>
+          <h3>Enjoy &amp; Share</h3>
+          <p>Your guests get instant prints and digital copies they can share to social media on the spot. After the event, access your full online gallery.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       TESTIMONIALS
+       ============================================================ -->
+ <!-- <section id="testimonials">
+    <div class="container">
+      <div class="section-header reveal">
+        <p class="eyebrow">Kind Words</p>
+        <h2 class="display">What Our Clients Say</h2>
+        <div class="divider"></div>
+      </div>
+      <div class="testimonials-grid">
+        <div class="testimonial reveal">
+          <div class="stars">★★★★★</div>
+          <p class="testimonial-text">"The booth was the highlight of our entire wedding reception. Every single guest was in line to use it — and the prints came out absolutely stunning."</p>
+          <p class="testimonial-author">Sarah &amp; James M.</p>
+          <p class="testimonial-event">Wedding — June 2024</p>
+        </div>
+        <div class="testimonial reveal">
+          <div class="stars">★★★★★</div>
+          <p class="testimonial-text">"We used Whitewater Events for our company's holiday party and it was a massive hit. The branded overlays made for incredible keepsakes and great marketing content."</p>
+          <p class="testimonial-author">Rebecca T.</p>
+          <p class="testimonial-event">Corporate Holiday Party</p>
+        </div>
+        <div class="testimonial reveal">
+          <div class="stars">★★★★★</div>
+          <p class="testimonial-text">"From booking to the last photo of the night, everything was seamless. The attendants were professional and so much fun. Highly, highly recommend."</p>
+          <p class="testimonial-author">Marcus &amp; Danielle K.</p>
+          <p class="testimonial-event">Sweet 16 Birthday</p>
+        </div>
+      </div>
+    </div>
+  </section> -->
+
+  <!-- ============================================================
+       FAQ
+       ============================================================ -->
+  <section id="faq">
+    <div class="container">
+      <div class="section-header reveal">
+        <p class="eyebrow">Got Questions?</p>
+        <h2 class="display">Frequently Asked</h2>
+        <div class="divider"></div>
+      </div>
+      <div class="faq-list reveal">
+
+        <div class="faq-item">
+          <button class="faq-question">How far in advance should I book? <span class="faq-icon"></span></button>
+          <div class="faq-answer"><p>We recommend booking at least 4–6 weeks in advance for peak season dates (spring and fall), and 2–3 weeks for off-peak dates. That said, reach out anytime — we'll always do our best to accommodate last-minute requests.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">How much space does the booth require? <span class="faq-icon"></span></button>
+          <div class="faq-answer"><p>Our standard setup requires approximately a 10×10 foot space and access to a standard electrical outlet. We'll confirm exact requirements once we know your venue layout.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">Can we get a custom backdrop or print design? <span class="faq-icon"></span></button>
+          <div class="faq-answer"><p>Absolutely! We offer full customization on backdrops, print overlays, and digital templates. Just let us know your theme, colors, and any logos or text you'd like included.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">Is there a travel fee for events outside your area? <span class="faq-icon"></span></button>
+          <div class="faq-answer"><p>We serve events within a [X]-mile radius with no travel fee. Beyond that, a small mileage fee may apply. Contact us with your venue location for an accurate quote.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">Do you offer outdoor setups? <span class="faq-icon"></span></button>
+          <div class="faq-answer"><p>Yes! Outdoor setups are possible with advance notice so we can bring the appropriate equipment. We require a covered or shaded area and access to power. Weather backup plans are also recommended.</p></div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">What happens to the photos after the event? <span class="faq-icon"></span></button>
+          <div class="faq-answer"><p>All photos are uploaded to a private online gallery that you and your guests can access for [X] days after the event. You can download full-resolution files at any time. We handle photos with the utmost privacy and never share them without permission.</p></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       CTA BANNER
+       ============================================================ -->
+  <section id="cta">
+    <div class="container reveal">
+      <p class="eyebrow">Ready to Create Memories?</p>
+      <h2 class="display">Your Perfect Event Starts<br/><em class="gold">Right Here</em></h2>
+      <p>Spots fill up fast — especially on weekends. Check your date availability today.</p>
+      <a href="#contact" class="btn btn-primary">Book Your Date</a>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       CONTACT
+       ============================================================ -->
+  <section id="contact">
+    <div class="container">
+      <div class="contact-grid">
+        <div class="contact-info reveal">
+          <p class="eyebrow">Say Hello</p>
+          <h2 class="display">Let's Make Your<br/><em class="gold">Event Unforgettable</em></h2>
+          <p>Fill out the form and we'll get back to you within one business day with availability and a custom quote.</p>
+
+          <div class="contact-detail">
+            <div class="contact-icon">✉</div>
+            <div class="contact-detail-text">
+              <strong>Email</strong>
+              <span>info@whitewater-events.com</span>
+            </div>
+          </div>
+          <div class="contact-detail">
+            <div class="contact-icon">☎</div>
+            <div class="contact-detail-text">
+              <strong>Phone</strong>
+              <span>(231) 632-5668</span>
+            </div>
+          </div>
+          <div class="contact-detail">
+            <div class="contact-icon">◎</div>
+            <div class="contact-detail-text">
+              <strong>Service Area</strong>
+              <span>Traverse City, Michigan &amp; Surrounding Areas</span>
+            </div>
+          </div>
+
+          <div class="social-links">
+            <a href="#" class="social-link" aria-label="Instagram">IG</a>
+            <a href="#" class="social-link" aria-label="Facebook">FB</a>
+            <a href="#" class="social-link" aria-label="TikTok">TT</a>
+          </div>
+        </div>
+
+
+  <form class="contact-form reveal" id="contact-form" action="https://formspree.io/f/xgoranja" method="POST">
+
+  <div class="form-row">
+    <div class="form-field">
+      <label for="name">Your Name</label>
+      <input type="text" id="name" name="name" placeholder="Jane Smith" required />
+    </div>
+
+    <div class="form-field">
+      <label for="email">Email Address</label>
+      <input type="email" id="email" name="email" placeholder="jane@email.com" required />
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-field">
+      <label for="phone">Phone Number</label>
+      <input type="tel" id="phone" name="phone" placeholder="(555) 000-0000" />
+    </div>
+
+    <div class="form-field">
+      <label for="date">Event Date</label>
+      <input type="date" id="date" name="date" />
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-field">
+      <label for="event-type">Event Type</label>
+      <select id="event-type" name="eventType">
+        <option value="" disabled selected>Select event type</option>
+        <option>Wedding</option>
+        <option>Birthday / Quinceañera</option>
+        <option>Corporate Event</option>
+        <option>Holiday Party</option>
+        <option>School / Prom</option>
+        <option>Other</option>
+      </select>
+    </div>
+
+    <div class="form-field">
+      <label for="package">Package Interest</label>
+      <select id="package" name="package">
+        <option value="" disabled selected>Select a package</option>
+        <option>Classic</option>
+        <option>Luxe</option>
+        <option>Corporate</option>
+        <option>Not Sure Yet</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="form-field">
+    <label for="message">Anything Else?</label>
+    <textarea id="message" name="message" placeholder="Tell us about your event, venue, guest count, or any special requests..."></textarea>
+  </div>
+
+<button type="submit" id="submit-btn" class="btn btn-primary" style="align-self:flex-start;">Send Inquiry →</button>
+<p id="form-success" style="display:none; color:var(--gold); font-size:0.88rem; margin-top:8px;">✦ Thank you! We'll be in touch within one business day.</p>
+
+</form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FOOTER
+       ============================================================ -->
+  <footer>
+    <div class="container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <span class="nav-logo">Whitewater Events</span>
+          <p>Premium photo booth rentals for weddings, corporate events, and every celebration in between.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Navigation</h4>
+          <ul>
+            <li><a href="#about">About Us</a></li>
+            <li><a href="#packages">Packages</a></li>
+            <li><a href="#gallery">Gallery</a></li>
+            <li><a href="#how">How It Works</a></li>
+            <li><a href="#faq">FAQ</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Services</h4>
+          <ul>
+            <li><a href="#packages">Wedding Booths</a></li>
+            <li><a href="#packages">Corporate Events</a></li>
+            <li><a href="#packages">Birthday Parties</a></li>
+            <li><a href="#packages">Custom Branding</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Contact</h4>
+          <ul>
+            <li><a href="mailto:info@whitewater-events.com">info@whitewater-events.com</a></li>
+            <li><a href="tel:2316325668">(555) 000-0000</a></li>
+            <li><a href="#contact">Book Now</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2025 Whitewater Events Photo Booth Rentals. All rights reserved.</p>
+        <p>Designed with ♥ for unforgettable moments.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============================================================
+       JAVASCRIPT
+       ============================================================ -->
+  <script>
+    // Sticky navbar
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 60);
+    });
+const form = document.getElementById('contact-form');
+form.addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const btn = document.getElementById('submit-btn');
+  btn.textContent = 'Sending...';
+  btn.style.opacity = '0.6';
+
+  const response = await fetch(form.action, {
+    method: 'POST',
+    body: new FormData(form),
+    headers: { 'Accept': 'application/json' }
+  });
+
+  if (response.ok) {
+    form.reset();
+    document.getElementById('form-success').style.display = 'block';
+    btn.textContent = 'Sent ✦';
+  } else {
+    btn.textContent = 'Something went wrong — try again';
+    btn.style.opacity = '1';
+  }
+});
+    
+    // Scroll reveal
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        }
+      });
+    }, { threshold: 0.12 });
+    reveals.forEach(el => observer.observe(el));
+
+    // FAQ accordion
+    document.querySelectorAll('.faq-question').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const item = btn.closest('.faq-item');
+        const isOpen = item.classList.contains('open');
+        document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+        if (!isOpen) item.classList.add('open');
+      });
+    });
+
+  </script>
+</body>
+</html>
